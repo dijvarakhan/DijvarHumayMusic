@@ -313,7 +313,15 @@ class Inline:
 
     def playlist_help(self, lang: dict):
         return self.ikm(
-            [[_ikb(text="⏪ GERİ DÖN", callback_data="help back", style="danger")]]
+            [
+                [
+                    _ikb(text="▶️ OYNAT", callback_data="play_playlist", style="success", icon_custom_emoji_id=EMOJI_NOTE),
+                    _ikb(text="🎲 KARIŞIK", callback_data="play_playlist_random", style="primary", icon_custom_emoji_id=EMOJI_SKIP),
+                ],
+                [
+                    _ikb(text="⏪ GERİ DÖN", callback_data="help back", style="danger")
+                ]
+            ]
         )
 
     def settings_markup(self, lang: dict, admin_only, cmd_delete, language, chat_id):
