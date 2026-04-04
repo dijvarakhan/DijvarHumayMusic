@@ -53,7 +53,7 @@ async def _listsudo(_, m: types.Message):
 
     await sent.edit_text(txt)
 
-@app.on_message(filters.command(["prune", "temizle"]) & filters.user(app.sudoers))
+@app.on_message(filters.command(["prune", "temizle"]) & app.sudo_filter)
 @lang.language()
 async def _prune(_, m: types.Message):
     if os.path.exists("downloads"):
