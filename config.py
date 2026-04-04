@@ -6,25 +6,25 @@ load_dotenv()
 
 class Config:
     def __init__(self):
-        self.API_ID = int(getenv("API_ID", "38168684"))
-        self.API_HASH = getenv("API_HASH", "e29dd7af9cac399bfbc003a4c60a23b6")
+        self.API_ID = int(getenv("API_ID", "39221561"))
+        self.API_HASH = getenv("API_HASH", "f450c818f9453c938e624fbdcb904998")
 
-        self.BOT_TOKEN = getenv("BOT_TOKEN", "8441056561:AAFhSeSQ49OoXZiuipYD-J94xjgjISd4KS0")
+        self.BOT_TOKEN = getenv("BOT_TOKEN", "7318798866:AAGJ4ZIsHSFKyjOTt2JSEwRc__JvqxJ1rT8")
         self.MONGO_URL = getenv("MONGO_URL", "mongodb+srv://mongoguess:guessmongo@cluster0.zcwklzz.mongodb.net/?retryWrites=true&w=majority")
 
-        self.LOGGER_ID = int(getenv("LOGGER_ID", "-1003639948579"))
-        self.OWNER_ID = int(getenv("OWNER_ID", "8237345360"))
+        self.LOGGER_ID = int(getenv("LOGGER_ID", "-1003837773958"))
+        self.OWNER_ID = int(getenv("OWNER_ID", "7612545925"))
 
         self.DURATION_LIMIT = int(getenv("DURATION_LIMIT", 180)) * 60
         self.QUEUE_LIMIT = int(getenv("QUEUE_LIMIT", 50))
         self.PLAYLIST_LIMIT = int(getenv("PLAYLIST_LIMIT", 20))
 
-        self.SESSION1 = getenv("SESSION", "BAJGaGwAB5mNIrS4H9VhhhjrGbeTsimp032-F152bC0pvKT0ACH0PYCbHSd9KYff_uCcZ6ocK914bSKAXNGrvRFATEADUgfMEdZ0ulRs-ahrdY2U05nBP8eSLSqRUk2qU1od8W5wP3a8uT-Ut5XIgM9MP3ZIUMYxfyw7qzCu0rl1LJPGHOdghEcKYSZFG7GDFGTZciB90-oXX_tAN5-Nghq61Gh-udGrkJeF3v_XMSaI-AmkOrEpuxf2uYEco8LLFuvAQmuARJgFN8Ev1zqqy7wwL7YFEWXaJGoLEDuDJwEmsA4COeQFsODpy8pDvcIzTMrPnJgH1NwT7xLucWXzPr9q2eL4BAAAAAH8BwLoAA")
+        self.SESSION1 = getenv("SESSION", "BAH8sMMASRl0kuwMlEr1qaJCX7HhxhyEpBUl8As7fWll71uhyxypW9LbTOo1EcXTevH8JU0jOxSfjC86M9Hi39G0mydufWLkFJkewYY1tKGpMd67rMjDx3goQXjso7cB6hjJHzhwypADMUlHQnZ4z1RIGzaAPa35UdnTGI_F_kL2HnT5bTLEm0CMgHPD12_jGf6Y7gtaVbez3fstfm7zAtIpRj3vF67rqvLklXSu62c1OA-SeGh2w2fl6wPs0Do9nqogrvidjKaH1d1cJRfJLRkZmmE9ZVKWTlZBQLp0lcZdhwftL8DyydFh7QkKahSIjxCEozLADq6JGlwZKYGmHKtFeoQcxQAAAAIMGeqQAA")
         self.SESSION2 = getenv("SESSION2", None)
         self.SESSION3 = getenv("SESSION3", None)
 
-        self.SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/grupgirdap")
-        self.SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/grupgirdap")
+        self.SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/humayliste")
+        self.SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/humayliste")
 
         def parse_bool(key: str, default: bool) -> bool:
             val = getenv(key)
