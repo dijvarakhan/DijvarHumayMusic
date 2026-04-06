@@ -9,7 +9,7 @@ from pathlib import Path
 
 from py_yt import Playlist, VideosSearch
 
-from KumsalTR import logger
+from KumsalTR import logger, config
 from KumsalTR.helpers import Track, utils
 
 
@@ -39,7 +39,7 @@ class YouTube:
                     try:
                         with open(path, "r", encoding="utf-8", errors="ignore") as f:
                             content = f.read(512)
-                            if "# Netscape" in content or "youtube.com" in content:
+                            if "# Netscape" in content or "youtube.com" in content or "google.com" in content:
                                 self.cookies.append(path)
                     except: pass
             self.checked = True
@@ -50,11 +50,42 @@ class YouTube:
         async with aiohttp.ClientSession() as session:
             for i, url in enumerate(urls):
                 path = f"{self.cookie_dir}/cookie_{i}.txt"
-                link = "https://batbin.me/api/v2/paste/" + url.split("/")[-1]
-                async with session.get(link) as resp:
-                    resp.raise_for_status()
-                    with open(path, "wb") as fw:
-                        fw.write(await resp.read())
+                if "batbin.me" in url:
+                    link = "https://batbin.me/api/v2/paste/" + url.split("/")[-1]
+                else:
+                    link = url # Direct link to .txt file
+                
+                try:
+                    async with session.get(link) as resp:
+                        if resp.status == 200:
+                            # Use text() to handle decoding automatically
+                            text_content = await resp.text()
+                            
+                            # Ensure tabs for Netscape format (7 columns separated by tabs)
+                            # Some pastebins or copying processes convert tabs to spaces
+                            processed_lines = []
+                            for line in text_content.splitlines():
+                                line = line.strip()
+                                if not line or line.startswith("#"):
+                                    processed_lines.append(line)
+                                    continue
+                                
+                                # Netscape cookies have exactly 7 columns
+                                # Split by any whitespace and rejoin with tabs for the first 6 columns
+                                parts = line.split(None, 6)
+                                if len(parts) >= 7:
+                                    processed_lines.append("\t".join(parts))
+                                else:
+                                    # Not a valid cookie line, but preserve it for manual inspection
+                                    processed_lines.append(line)
+                            
+                            # Write as UTF-8 with proper newlines
+                            with open(path, "w", encoding="utf-8", newline="\n") as fw:
+                                fw.write("\n".join(processed_lines) + "\n")
+                        else:
+                            logger.warning(f"Failed to fetch cookies from {link}: Status {resp.status}")
+                except Exception as e:
+                    logger.error(f"Error fetching cookies from {link}: {e}")
         logger.info(f"Cookies saved in {self.cookie_dir}.")
 
     def valid(self, url: str) -> bool:
@@ -174,8 +205,11 @@ class YouTube:
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0",
         ]
 
-        attempts = [None] + list(self.cookies)
-        random.shuffle(attempts)
+        attempts = list(self.cookies) + [None]
+        # Keep registered cookies at the front, but shuffle them among themselves
+        cookies_only = list(self.cookies)
+        random.shuffle(cookies_only)
+        attempts = cookies_only + [None]
 
         # Optimization: Limit cookie attempts to avoid long delays
         for cookie in attempts[:5]:
@@ -190,12 +224,12 @@ class YouTube:
                 "socket_timeout": 10,
                 "extractor_args": {
                     "youtube": {
-                        "player_client": ["android", "web"],
-                        "skip": ["web_safari", "ios"]
+                        "player_client": ["android", "ios"],
+                        "player_skip": ["webpage", "configs"],
                     }
                 },
+                "javascript_engine": "node",
                 "http_headers": {
-                    "User-Agent": random.choice(user_agents),
                     "Accept-Language": "tr-TR,tr;q=0.8,en-US;q=0.5,en;q=0.3",
                     "Connection": "keep-alive",
                 },
@@ -218,6 +252,7 @@ class YouTube:
                     return res_url
             except Exception as e:
                 err = str(e).lower()
+                logger.error(f"yt-dlp error with cookie {os.path.basename(cookie) if cookie else 'None'}: {e}")
                 if "403" in err or "429" in err:
                     continue
                 if "sign in to confirm" in err:
@@ -228,7 +263,9 @@ class YouTube:
                             os.remove(cookie)
                         except: pass
                     continue
+        logger.warning(f"All cookie attempts failed for {video_id}. Consider updating your cookies on batbin.me.")
         return None
+
 
 
 
